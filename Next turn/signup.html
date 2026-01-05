@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up | Next Turn</title>
+
+  <link rel="stylesheet" href="signup.css">
+
+  <!-- Firebase SDKs (REQUIRED) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="signup-card">
+    <h1>Next Turn</h1>
+    <p class="subtitle">Create your account to manage queues digitally</p>
+
+    <input type="email" id="email" placeholder="Email address">
+    <input type="password" id="password" placeholder="Password (min 6 chars)">
+
+    <button onclick="signup()">Create Account</button>
+
+    <p id="message"></p>
+
+    <p class="bottom-text">
+      Already have an account?
+      <a href="login.html">Login</a>
+    </p>
+  </div>
+
+</div>
+
+<script src="signup.js"></script>
+</body>
+</html>

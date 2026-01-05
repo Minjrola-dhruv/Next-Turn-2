@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Queue - Next Turn</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .join-container {
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 40px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+
+    .place-header {
+      text-align: center;
+      padding: 30px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 15px;
+      color: white;
+      margin-bottom: 30px;
+    }
+
+    .place-header h1 {
+      margin-bottom: 10px;
+      font-size: 32px;
+    }
+
+    .place-header p {
+      opacity: 0.9;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 15px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+    }
+
+    .priority-selector {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .priority-option {
+      position: relative;
+    }
+
+    .priority-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .priority-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      border: 3px solid #e2e8f0;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: #f8fafc;
+    }
+
+    .priority-option input[type="radio"]:checked + .priority-label {
+      border-color: #3b82f6;
+      background: linear-gradient(135deg, #dbeafe, #eff6ff);
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(59,130,246,0.2);
+    }
+
+    .priority-label .emoji {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .priority-label .text {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .priority-label .desc {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 5px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      font-size: 18px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 8px 20px rgba(59,130,246,0.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(59,130,246,0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .success-card {
+      display: none;
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      border-radius: 15px;
+      margin-top: 30px;
+    }
+
+    .success-card.show {
+      display: block;
+      animation: slideUp 0.5s ease;
+    }
+
+    .token-display {
+      font-size: 48px;
+      font-weight: 900;
+      color: #065f46;
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .queue-info {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .queue-info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .queue-info-item:last-child {
+      border-bottom: none;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      border: 2px solid #ef4444;
+      color: #991b1b;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .info-banner {
+      background: #dbeafe;
+      border-left: 4px solid #3b82f6;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      font-size: 14px;
+      color: #1e40af;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 18px;
+      color: #64748b;
+    }
+
+    .track-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 30px;
+      background: #3b82f6;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .track-btn:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+<div class="join-container">
+  <div id="loadingState" class="loading">
+    <p>Loading queue information...</p>
+  </div>
+
+  <div id="placeHeader" class="place-header" style="display: none;">
+    <h1 id="placeName">-</h1>
+    <p id="placeAddress">-</p>
+    <p id="queueStatus">Current wait time: <strong id="currentWaitTime">-</strong></p>
+  </div>
+
+  <form id="joinQueueForm" style="display: none;">
+    <div class="info-banner">
+      ℹ️ Fill in your details to join the digital queue. We'll send email notifications when your turn is approaching.
+    </div>
+
+    <div class="form-group">
+      <label for="name">Full Name *</label>
+      <input type="text" id="name" required placeholder="Enter your full name">
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email Address *</label>
+      <input type="email" id="email" required placeholder="your@email.com">
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+    </div>
+
+    <div class="form-group">
+      <label for="age">Age</label>
+      <input type="number" id="age" min="1" max="120" placeholder="Optional">
+    </div>
+
+    <label style="display: block; margin-bottom: 15px; font-weight: 700; color: #0f172a; font-size: 15px;">
+      Select Priority Category *
+    </label>
+
+    <div class="priority-selector">
+      <div class="priority-option">
+        <input type="radio" id="priorityNormal" name="priority" value="normal" checked>
+        <label for="priorityNormal" class="priority-label">
+          <span class="emoji">👤</span>
+          <span class="text">Normal</span>
+          <span class="desc">Standard queue</span>
+        </label>
+      </div>
+
+      <div class="priority-option">
+        <input type="radio" id="priorityChild" name="priority" value="child">
+        <label for="priorityChild" class="priority-label">
+          <span class="emoji">👶</span>
+          <span class="text">Child</span>
+          <span class="desc">Age below 12</span>
+        </label>
+      </div>
+
+      <div class="priority-option">
+        <input type="radio" id="priorityElderly" name="priority" value="elderly">
+        <label for="priorityElderly" class="priority-label">
+          <span class="emoji">👴</span>
+          <span class="text">Elderly</span>
+          <span class="desc">Age above 60</span>
+        </label>
+      </div>
+
+      <div class="priority-option">
+        <input type="radio" id="priorityPregnant" name="priority" value="pregnant">
+        <label for="priorityPregnant" class="priority-label">
+          <span class="emoji">🤰</span>
+          <span class="text">Pregnant</span>
+          <span class="desc">Priority service</span>
+        </label>
+      </div>
+    </div>
+
+    <button type="submit" id="submitBtn" class="submit-btn">🎫 Join Queue</button>
+  </form>
+
+  <div id="errorMessage" class="error-message"></div>
+
+  <div id="successCard" class="success-card">
+    <h2>✅ Successfully Joined Queue!</h2>
+    <p>Your Token Number:</p>
+    <div class="token-display" id="tokenDisplay">-</div>
+    
+    <div class="queue-info">
+      <div class="queue-info-item">
+        <span>Position in Queue:</span>
+        <strong id="queuePosition">-</strong>
+      </div>
+      <div class="queue-info-item">
+        <span>Estimated Wait Time:</span>
+        <strong id="estimatedTime">-</strong>
+      </div>
+      <div class="queue-info-item">
+        <span>Priority Type:</span>
+        <strong id="priorityDisplay">-</strong>
+      </div>
+    </div>
+
+    <p style="margin-top: 20px; color: #065f46; font-size: 14px;">
+      📧 Check your email for updates. We'll notify you when your turn is near!
+    </p>
+
+    <a href="track.html" class="track-btn">📊 Track Your Queue Status</a>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+
+<script>
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Backend API URL - automatically use production or development
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3000/api'
+  : 'https://nextturn-three.vercel.app/api';
+
+let currentPlaceId = null;
+let currentPlace = null;
+
+// Get place ID from URL
+const urlParams = new URLSearchParams(window.location.search);
+currentPlaceId = urlParams.get('placeId');
+
+if (!currentPlaceId) {
+  document.getElementById('loadingState').innerHTML = '<p style="color: #ef4444;">❌ Invalid QR code. No place ID found.</p>';
+} else {
+  loadPlaceInfo();
+}
+
+/**
+ * Load place information
+ */
+async function loadPlaceInfo() {
+  try {
+    const placeSnapshot = await db.ref(`places/${currentPlaceId}`).once('value');
+    currentPlace = placeSnapshot.val();
+
+    if (!currentPlace) {
+      throw new Error('Place not found');
+    }
+
+    if (!currentPlace.active) {
+      throw new Error('This queue is currently closed');
+    }
+
+    // Get current queue status
+    const queueSnapshot = await db.ref(`queues/${currentPlaceId}`).once('value');
+    const queueData = queueSnapshot.val() || {};
+    const waitingCount = Object.values(queueData).filter(q => q.status === 'waiting').length;
+    const avgWaitTime = waitingCount * (currentPlace.avgServiceTime || 5);
+
+    // Show place info
+    document.getElementById('placeName').textContent = currentPlace.name;
+    document.getElementById('placeAddress').textContent = currentPlace.address || '';
+    document.getElementById('currentWaitTime').textContent = avgWaitTime + ' minutes';
+
+    // Show form
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('placeHeader').style.display = 'block';
+    document.getElementById('joinQueueForm').style.display = 'block';
+
+  } catch (error) {
+    console.error('Load place error:', error);
+    document.getElementById('loadingState').innerHTML = `
+      <p style="color: #ef4444;">❌ ${error.message}</p>
+      <a href="index.html" style="color: #3b82f6; text-decoration: underline;">Go to Home</a>
+    `;
+  }
+}
+
+/**
+ * Handle form submission
+ */
+document.getElementById('joinQueueForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = '⏳ Joining Queue...';
+
+  try {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const age = document.getElementById('age').value ? parseInt(document.getElementById('age').value) : null;
+    const priorityType = document.querySelector('input[name="priority"]:checked').value;
+
+    // Validate
+    if (!name || !email) {
+      throw new Error('Please fill in all required fields');
+    }
+
+    // Call backend API
+    const response = await fetch(`${API_URL}/queue-join`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        placeId: currentPlaceId,
+        name,
+        email,
+        phone,
+        priorityType,
+        age
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to join queue');
+    }
+
+    // Show success
+    document.getElementById('joinQueueForm').style.display = 'none';
+    document.getElementById('tokenDisplay').textContent = result.token;
+    document.getElementById('queuePosition').textContent = '#' + result.position;
+    document.getElementById('estimatedTime').textContent = result.estimatedTime + ' minutes';
+    document.getElementById('priorityDisplay').textContent = formatPriority(priorityType);
+    document.getElementById('successCard').classList.add('show');
+
+    // Store token in localStorage for tracking
+    localStorage.setItem('lastToken', JSON.stringify({
+      token: result.token,
+      placeId: currentPlaceId,
+      placeName: currentPlace.name,
+      queueId: result.queueId,
+      timestamp: Date.now()
+    }));
+
+  } catch (error) {
+    console.error('Join queue error:', error);
+    showError(error.message);
+    submitBtn.disabled = false;
+    submitBtn.textContent = '🎫 Join Queue';
+  }
+});
+
+function showError(message) {
+  const errorEl = document.getElementById('errorMessage');
+  errorEl.textContent = '❌ ' + message;
+  errorEl.style.display = 'block';
+
+  setTimeout(() => {
+    errorEl.style.display = 'none';
+  }, 5000);
+}
+
+function formatPriority(priority) {
+  const map = {
+    normal: '👤 Normal',
+    child: '👶 Child',
+    elderly: '👴 Elderly',
+    pregnant: '🤰 Pregnant'
+  };
+  return map[priority] || priority;
+}
+</script>
+
+</body>
+</html>

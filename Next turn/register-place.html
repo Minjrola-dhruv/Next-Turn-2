@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Your Place - Next Turn</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    .register-container {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 40px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+
+    .form-section {
+      margin-bottom: 30px;
+    }
+
+    .form-section h3 {
+      margin-bottom: 15px;
+      color: var(--blue-main);
+      font-size: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--blue-main);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .qr-preview {
+      margin-top: 30px;
+      padding: 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 15px;
+      text-align: center;
+      color: white;
+    }
+
+    .qr-preview h3 {
+      margin-bottom: 20px;
+    }
+
+    #generatedQR {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      display: inline-block;
+      margin: 20px 0;
+    }
+
+    .qr-info {
+      background: rgba(255,255,255,0.2);
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 20px;
+    }
+
+    .success-message {
+      padding: 20px;
+      background: #d1fae5;
+      border: 2px solid #10b981;
+      border-radius: 10px;
+      color: #065f46;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .error-message {
+      padding: 20px;
+      background: #fee2e2;
+      border: 2px solid #ef4444;
+      border-radius: 10px;
+      color: #991b1b;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--blue-main);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="register-container">
+  <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+  
+  <h1 style="text-align: center; margin-bottom: 10px;">Register Your Place</h1>
+  <p style="text-align: center; color: var(--text-muted); margin-bottom: 40px;">
+    Create a digital queue for your business or service center
+  </p>
+
+  <form id="registerPlaceForm">
+    <!-- Basic Information -->
+    <div class="form-section">
+      <h3>📍 Basic Information</h3>
+      
+      <div class="form-group">
+        <label for="placeName">Place Name *</label>
+        <input type="text" id="placeName" required placeholder="e.g., City Hospital, ABC Bank">
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category *</label>
+        <select id="category" required>
+          <option value="">Select Category</option>
+          <option value="hospital">🏥 Hospital / Clinic</option>
+          <option value="bank">🏦 Bank</option>
+          <option value="government">🏛️ Government Office</option>
+          <option value="restaurant">🍽️ Restaurant</option>
+          <option value="retail">🛒 Retail Store</option>
+          <option value="salon">💇 Salon / Spa</option>
+          <option value="other">📌 Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address *</label>
+        <textarea id="address" required placeholder="Enter full address"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Contact Phone</label>
+        <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+      </div>
+    </div>
+
+    <!-- Queue Settings -->
+    <div class="form-section">
+      <h3>⚙️ Queue Settings</h3>
+      
+      <div class="form-group">
+        <label for="avgServiceTime">Average Service Time (minutes) *</label>
+        <input type="number" id="avgServiceTime" required min="1" value="5" placeholder="5">
+        <small style="color: var(--text-muted);">Estimated time to serve one person</small>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="enablePriority" checked>
+          Enable Priority Queue (Children, Elderly, Pregnant Women)
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="enableNotifications" checked>
+          Enable Email Notifications
+        </label>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn">Generate QR Code & Register</button>
+  </form>
+
+  <div id="successMessage" class="success-message"></div>
+  <div id="errorMessage" class="error-message"></div>
+
+  <div id="qrPreview" class="qr-preview" style="display: none;">
+    <h3>🎉 Your Place is Registered!</h3>
+    <p>Here's your unique QR code for this location</p>
+    
+    <div id="generatedQR"></div>
+    
+    <div class="qr-info">
+      <p><strong>Place ID:</strong> <span id="displayPlaceId"></span></p>
+      <p><strong>Share this QR code at your location</strong></p>
+      <p>Customers can scan it to join the queue</p>
+    </div>
+
+    <button onclick="downloadQR()" style="margin-top: 20px;">📥 Download QR Code</button>
+    <button onclick="window.location.href='admin.html?placeId=' + currentPlaceId" 
+            style="margin-top: 20px; margin-left: 10px;">
+      🎛️ Manage Queue
+    </button>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<!-- QR Code Library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+<script src="firebase-config.js"></script>
+
+<script>
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const auth = firebase.auth();
+
+let currentPlaceId = null;
+let qrCodeInstance = null;
+
+// Check if user is logged in
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = 'login.html';
+  }
+});
+
+document.getElementById('registerPlaceForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const user = auth.currentUser;
+  if (!user) {
+    showError('Please login first');
+    return;
+  }
+
+  try {
+    // Get form data
+    const placeName = document.getElementById('placeName').value.trim();
+    const category = document.getElementById('category').value;
+    const address = document.getElementById('address').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const avgServiceTime = parseInt(document.getElementById('avgServiceTime').value);
+    const enablePriority = document.getElementById('enablePriority').checked;
+    const enableNotifications = document.getElementById('enableNotifications').checked;
+
+    // Generate unique place ID
+    const placeRef = db.ref('places').push();
+    currentPlaceId = placeRef.key;
+
+    // Generate QR code URL (points to join page with place ID)
+    const qrCodeURL = `${window.location.origin}/join.html?placeId=${currentPlaceId}`;
+
+    // Create place data
+    const placeData = {
+      name: placeName,
+      category: category,
+      address: address,
+      phone: phone,
+      avgServiceTime: avgServiceTime,
+      enablePriority: enablePriority,
+      enableNotifications: enableNotifications,
+      ownerId: user.uid,
+      ownerEmail: user.email,
+      qrCode: qrCodeURL,
+      createdAt: Date.now(),
+      active: true,
+      totalServed: 0
+    };
+
+    // Save to Firebase
+    await placeRef.set(placeData);
+
+    // Update user's places
+    await db.ref(`users/${user.uid}/places/${currentPlaceId}`).set({
+      name: placeName,
+      role: 'owner',
+      addedAt: Date.now()
+    });
+
+    // Show success
+    showSuccess(`Successfully registered ${placeName}!`);
+    
+    // Hide form
+    document.getElementById('registerPlaceForm').style.display = 'none';
+    
+    // Generate and show QR code
+    generateQRCode(qrCodeURL, currentPlaceId);
+
+  } catch (error) {
+    console.error('Registration error:', error);
+    showError('Failed to register place: ' + error.message);
+  }
+});
+
+function generateQRCode(url, placeId) {
+  const qrDiv = document.getElementById('generatedQR');
+  qrDiv.innerHTML = '';
+  
+  qrCodeInstance = new QRCode(qrDiv, {
+    text: url,
+    width: 256,
+    height: 256,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  document.getElementById('displayPlaceId').textContent = placeId;
+  document.getElementById('qrPreview').style.display = 'block';
+  
+  // Scroll to QR code
+  document.getElementById('qrPreview').scrollIntoView({ behavior: 'smooth' });
+}
+
+function downloadQR() {
+  const canvas = document.querySelector('#generatedQR canvas');
+  if (canvas) {
+    const url = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.download = `nextturn-qr-${currentPlaceId}.png`;
+    link.href = url;
+    link.click();
+  }
+}
+
+function showSuccess(message) {
+  const el = document.getElementById('successMessage');
+  el.textContent = message;
+  el.style.display = 'block';
+  document.getElementById('errorMessage').style.display = 'none';
+}
+
+function showError(message) {
+  const el = document.getElementById('errorMessage');
+  el.textContent = message;
+  el.style.display = 'block';
+  document.getElementById('successMessage').style.display = 'none';
+}
+</script>
+
+</body>
+</html>

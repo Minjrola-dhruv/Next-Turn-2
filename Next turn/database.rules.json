@@ -1,0 +1,61 @@
+{
+  "rules": {
+    "places": {
+      ".read": true,
+      "$placeId": {
+        ".write": "auth != null && (!data.exists() || data.child('ownerId').val() === auth.uid)",
+        ".validate": "newData.hasChildren(['name', 'category', 'ownerId', 'qrCode', 'createdAt'])",
+        "name": { ".validate": "newData.isString() && newData.val().length > 0" },
+        "category": { ".validate": "newData.isString()" },
+        "ownerId": { ".validate": "newData.isString()" },
+        "qrCode": { ".validate": "newData.isString()" },
+        "createdAt": { ".validate": "newData.isNumber()" }
+      }
+    },
+    "queues": {
+      "$placeId": {
+        ".read": true,
+        "$queueId": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['name', 'email', 'priorityType', 'position', 'status', 'createdAt'])",
+          "name": { ".validate": "newData.isString() && newData.val().length > 0" },
+          "email": { ".validate": "newData.isString() && newData.val().matches(/^[^@]+@[^@]+\\.[^@]+$/)" },
+          "phone": { ".validate": "newData.isString()" },
+          "priorityType": { ".validate": "newData.isString() && (newData.val() === 'normal' || newData.val() === 'child' || newData.val() === 'elderly' || newData.val() === 'pregnant')" },
+          "position": { ".validate": "newData.isNumber()" },
+          "status": { ".validate": "newData.isString() && (newData.val() === 'waiting' || newData.val() === 'called' || newData.val() === 'completed')" },
+          "createdAt": { ".validate": "newData.isNumber()" },
+          "estimatedTime": { ".validate": "newData.isNumber()" }
+        }
+      }
+    },
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        "email": { ".validate": "newData.isString()" },
+        "role": { ".validate": "newData.isString()" },
+        "places": { ".validate": "newData.hasChildren()" }
+      }
+    },
+    "analytics": {
+      "$placeId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "$date": {
+          "totalServed": { ".validate": "newData.isNumber()" },
+          "avgWaitTime": { ".validate": "newData.isNumber()" },
+          "peakHours": { ".validate": "newData.hasChildren()" }
+        }
+      }
+    },
+    "notifications": {
+      "$placeId": {
+        "$queueId": {
+          ".read": true,
+          ".write": true
+        }
+      }
+    }
+  }
+}

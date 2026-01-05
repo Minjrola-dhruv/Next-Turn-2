@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard – Next Turn</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <img src="Images/ChatGPT Image Jan 3, 2026, 06_27_04 PM.png" alt="Next Turn">
+      <h2>Next Turn</h2>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-link active">📊 Dashboard</a>
+      <a href="register-place.html" class="nav-link">➕ Register Place</a>
+      <a href="admin.html" class="nav-link">🎛️ Manage Queue</a>
+      <a href="track.html" class="nav-link">📍 Track Queue</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <p class="user-email" id="userEmail">user@example.com</p>
+      <button class="logout-btn" onclick="logoutUser()">Logout</button>
+    </div>
+  </div>
+  
+  <div class="main">
+    <div class="top-bar">
+      <div>
+        <h1>Client Dashboard</h1>
+        <p class="subtitle">Manage your digital queues</p>
+      </div>
+
+      <div class="top-bar-actions">
+        <button class="btn-primary" onclick="window.location.href='register-place.html'">
+          ➕ Register New Place
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stat-grid">
+      <div class="card stat-card blue">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <h2 id="totalWaiting">0</h2>
+          <p>Total Waiting</p>
+        </div>
+      </div>
+
+      <div class="card stat-card green">
+        <div class="stat-icon">🏢</div>
+        <div class="stat-content">
+          <h2 id="totalPlaces">0</h2>
+          <p>Your Places</p>
+        </div>
+      </div>
+
+      <div class="card stat-card yellow">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <h2 id="totalServed">0</h2>
+          <p>Total Served</p>
+        </div>
+      </div>
+
+      <div class="card stat-card purple">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-content">
+          <h2 id="avgTime">0</h2>
+          <p>Avg Wait Time</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Your Places -->
+    <div class="section-header">
+      <h2>Your Places</h2>
+      <p>Manage your registered locations</p>
+    </div>
+
+    <div id="placesContainer" class="places-grid">
+      <div class="empty-state">
+        <p>No places registered yet. Click "Register New Place" to get started!</p>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-header">
+      <h2>Quick Actions</h2>
+    </div>
+
+    <div class="actions-grid">
+      <a href="register-place.html" class="action-card">
+        <div class="action-icon">➕</div>
+        <h3>Register Place</h3>
+        <p>Add a new location to manage queues</p>
+      </a>
+
+      <a href="track.html" class="action-card">
+        <div class="action-icon">📍</div>
+        <h3>Track Queue</h3>
+        <p>Check your position in any queue</p>
+      </a>
+
+      <a href="#" onclick="showHelp(); return false;" class="action-card">
+        <div class="action-icon">❓</div>
+        <h3>Help & Support</h3>
+        <p>Get help with Next Turn</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<!-- QR Code Library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="dashboard.js"></script>
+
+</body>
+</html>

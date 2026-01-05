@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Next Turn</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <img src="Images/ChatGPT Image Jan 3, 2026, 06_27_04 PM.png" alt="Next Turn">
+      <h2>Next Turn</h2>
+    </div>
+
+    <nav class="admin-nav">
+      <a href="#overview" class="nav-item active" onclick="showSection('overview')">
+        <span>📊</span> Overview
+      </a>
+      <a href="#queue" class="nav-item" onclick="showSection('queue')">
+        <span>👥</span> Queue Management
+      </a>
+      <a href="#analytics" class="nav-item" onclick="showSection('analytics')">
+        <span>📈</span> Analytics
+      </a>
+      <a href="#settings" class="nav-item" onclick="showSection('settings')">
+        <span>⚙️</span> Settings
+      </a>
+    </nav>
+
+    <div class="admin-footer">
+      <button onclick="logoutAdmin()" class="logout-btn">🚪 Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <!-- Header -->
+    <header class="admin-header">
+      <div>
+        <h1 id="placeName">Loading...</h1>
+        <p id="placeAddress" class="text-muted"></p>
+      </div>
+      <div class="header-actions">
+        <button onclick="refreshData()" class="btn-secondary">🔄 Refresh</button>
+        <button onclick="showQR()" class="btn-primary">📱 Show QR</button>
+      </div>
+    </header>
+
+    <!-- Overview Section -->
+    <section id="overview" class="admin-section active">
+      <h2>Overview</h2>
+      
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-icon">👥</div>
+          <div class="stat-content">
+            <h3 id="waitingCount">0</h3>
+            <p>People Waiting</p>
+          </div>
+        </div>
+
+        <div class="stat-card green">
+          <div class="stat-icon">⏱️</div>
+          <div class="stat-content">
+            <h3 id="avgWaitTime">0 min</h3>
+            <p>Avg Wait Time</p>
+          </div>
+        </div>
+
+        <div class="stat-card yellow">
+          <div class="stat-icon">✅</div>
+          <div class="stat-content">
+            <h3 id="servedToday">0</h3>
+            <p>Served Today</p>
+          </div>
+        </div>
+
+        <div class="stat-card purple">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-content">
+            <h3 id="totalServed">0</h3>
+            <p>Total Served</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Person -->
+      <div class="current-person-card">
+        <h3>Current Person Being Served</h3>
+        <div id="currentPerson">
+          <p class="empty-state">No one currently being served</p>
+        </div>
+      </div>
+
+      <!-- Next in Line -->
+      <div class="next-in-line">
+        <h3>Next in Line</h3>
+        <div id="nextPeople">
+          <p class="empty-state">Queue is empty</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Queue Management Section -->
+    <section id="queue" class="admin-section">
+      <h2>Queue Management</h2>
+      
+      <div class="queue-controls">
+        <button onclick="callNext()" class="btn-large btn-primary">📢 Call Next Person</button>
+        <button onclick="markCompleted()" class="btn-large btn-success">✅ Mark as Completed</button>
+        <button onclick="clearQueue()" class="btn-large btn-danger">🗑️ Clear Queue</button>
+      </div>
+
+      <div class="queue-table-container">
+        <table class="queue-table">
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Priority</th>
+              <th>Position</th>
+              <th>Wait Time</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="queueTableBody">
+            <tr>
+              <td colspan="9" class="empty-state">No people in queue</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Analytics Section -->
+    <section id="analytics" class="admin-section">
+      <h2>Analytics & Insights</h2>
+      
+      <div class="analytics-grid">
+        <div class="analytics-card">
+          <h3>📊 Queue Statistics</h3>
+          <div id="queueStats">
+            <div class="stat-row">
+              <span>Total People Today:</span>
+              <strong id="analyticsTotalToday">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Priority Users:</span>
+              <strong id="analyticsPriority">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Average Service Time:</span>
+              <strong id="analyticsAvgService">0 min</strong>
+            </div>
+            <div class="stat-row">
+              <span>Peak Hour:</span>
+              <strong id="analyticsPeakHour">N/A</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="analytics-card">
+          <h3>⏰ Time Analysis</h3>
+          <div id="timeAnalysis">
+            <div class="stat-row">
+              <span>Shortest Wait:</span>
+              <strong id="shortestWait">N/A</strong>
+            </div>
+            <div class="stat-row">
+              <span>Longest Wait:</span>
+              <strong id="longestWait">N/A</strong>
+            </div>
+            <div class="stat-row">
+              <span>Current Queue Time:</span>
+              <strong id="currentQueueTime">0 min</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="analytics-card">
+          <h3>👤 Category Breakdown</h3>
+          <div id="categoryBreakdown">
+            <div class="stat-row">
+              <span>Normal:</span>
+              <strong id="catNormal">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Children:</span>
+              <strong id="catChild">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Elderly:</span>
+              <strong id="catElderly">0</strong>
+            </div>
+            <div class="stat-row">
+              <span>Pregnant:</span>
+              <strong id="catPregnant">0</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Settings Section -->
+    <section id="settings" class="admin-section">
+      <h2>Settings</h2>
+      
+      <div class="settings-card">
+        <h3>⚙️ Queue Configuration</h3>
+        <form id="settingsForm">
+          <div class="form-group">
+            <label>Average Service Time (minutes)</label>
+            <input type="number" id="settingAvgTime" min="1" value="5">
+          </div>
+
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="settingPriority" checked>
+              Enable Priority Queue
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="settingNotifications" checked>
+              Enable Email Notifications
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="settingActive" checked>
+              Queue Active (Accept New Entries)
+            </label>
+          </div>
+
+          <button type="submit" class="btn-primary">💾 Save Settings</button>
+        </form>
+      </div>
+
+      <div class="settings-card">
+        <h3>📱 QR Code</h3>
+        <p>Share this QR code at your location for customers to join the queue</p>
+        <div id="qrCodeDisplay" class="qr-display"></div>
+        <button onclick="downloadQRCode()" class="btn-secondary">📥 Download QR Code</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Modal for QR Code -->
+<div id="qrModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeQRModal()">&times;</span>
+    <h2>Scan to Join Queue</h2>
+    <div id="modalQRCode"></div>
+    <p>Share this QR code with your customers</p>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<!-- QR Code Library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>

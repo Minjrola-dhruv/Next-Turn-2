@@ -1,0 +1,57 @@
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background:
+    radial-gradient(circle at top left, #bfdbfe, transparent 45%),
+    radial-gradient(circle at bottom right, #a7f3d0, transparent 45%),
+    #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-container {
+  background: white;
+  padding: 36px;
+  border-radius: 22px;
+  text-align: center;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+}
+
+.qr-container h2 {
+  margin-bottom: 6px;
+}
+
+.qr-container p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+#qrCode {
+  margin: 24px auto;
+}
+
+.form-link a {
+  font-size: 13px;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(37,99,235,0.35);
+}
